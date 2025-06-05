@@ -1,0 +1,14 @@
+[project]
+name = "test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "beautifulsoup4>=4.13.4",
+    "pyperclip>=1.9.0",
+    "pyside6>=6.9.1",
+    "requests>=2.32.3",
+    "selenium>=4.33.0",
+    "seleniumbase>=4.39.2",
+]
