@@ -300,10 +300,23 @@ class WorkerThread(QThread):
                 title, velog_content_all = self.variables[f'page_{i}']
                 self.log_signal.emit(f"업로드 중: {title} ({i+1}/{len(self.variables)})", "INFO")
 
-                # 새 글 작성
-                self.driver.wait_for_element('//*[@id="html"]/body/div/div[2]/div[2]/div/header/div/div[2]/a[3]/button', timeout=10)
-                self.driver.click('//*[@id="html"]/body/div/div[2]/div[2]/div/header/div/div[2]/a[3]/button')
+                    # 새 글 작성
+                # self.driver.wait_for_element("//button[contains(text(), '새 글 작성')]", timeout=10)
+                # self.driver.click("//button[contains(text(), '새 글 작성')]")
+                write_xpaths = [
+                    '//*[@id="root"]/div[2]/div[1]/div/div[2]/button',
+                    '//*[@id="html"]/body/div/div[2]/div[2]/div/header/div/div[2]/a[3]/button',
+                ]
 
+                for xpath in write_xpaths:
+                    try:
+                        self.driver.wait_for_element(xpath, timeout=30)
+                        element = self.driver.find_element(By.XPATH, xpath)
+                        element.click()
+                        break
+                    except:
+                        pass
+ 
                 # 제목 작성
                 self.driver.wait_for_element('//*[@id="root"]/div[2]/div/div[1]/div/div[1]/div[1]/div/textarea')
                 self.driver.type('//*[@id="root"]/div[2]/div/div[1]/div/div[1]/div[1]/div/textarea', '프로그래머스 ' + title)
@@ -343,6 +356,7 @@ class WorkerThread(QThread):
                 self.driver.click('//*[@id="root"]/div[2]/div[2]/div/div[3]/div[2]/button[2]')
 
                 self.log_signal.emit(f'업로드 완료: {title}', "SUCCESS")
+                time.sleep(1)
                 
             except Exception as e:
                 self.log_signal.emit(f'업로드 실패: {title} - {str(e)}', "ERROR")
@@ -361,14 +375,6 @@ class MainMenu(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
-
-
-        # .ui 파일 로드
-        # loader = QUiLoader()
-        # ui_file = QFile("ui/auto_upload.ui")
-        # ui_file.open(QFile.ReadOnly)
-        # self.ui = loader.load(ui_file, self)
-        # ui_file.close()
 
         ui_path = resource_path("ui/auto_upload.ui")
         loader = QUiLoader()
